@@ -18,8 +18,8 @@ public class MiniaturaService {
     private MiniaturaRepository repository;
 
     public Page<Miniatura> findAll(int page){
-        Page<Miniatura> alunos = repository.findAll(PageRequest.of(page, 5));
-        return alunos;
+        Page<Miniatura> miniaturas = repository.findAll(PageRequest.of(page, 50));
+        return miniaturas;
     }
 
     public void save(Miniatura miniatura) {

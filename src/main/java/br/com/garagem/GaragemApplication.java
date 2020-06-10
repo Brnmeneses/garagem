@@ -1,8 +1,6 @@
 package br.com.garagem;
 
-import br.com.garagem.model.Miniatura;
 import br.com.garagem.model.repository.MiniaturaRepository;
-import br.com.garagem.service.MiniaturaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

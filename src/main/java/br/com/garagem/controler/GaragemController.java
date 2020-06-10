@@ -1,7 +1,9 @@
 package br.com.garagem.controler;
 
 import br.com.garagem.model.Miniatura;
+import br.com.garagem.service.MarcaService;
 import br.com.garagem.service.MiniaturaService;
+import br.com.garagem.service.PaisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +15,7 @@ import java.util.Optional;
 public class GaragemController {
 
     @Autowired
-    private MiniaturaService service;
+    private MiniaturaService miniaturaService;
 
     @RequestMapping("/")
     public String index() {
@@ -23,26 +25,27 @@ public class GaragemController {
     @GetMapping("/garagem")
     public String garagem(@RequestParam(defaultValue = "0") int page,
                         Model model){
-        model.addAttribute("data", service.findAll(page));
+        model.addAttribute("data", miniaturaService.findAll(page));
         model.addAttribute("currentPage", page);
         return "garagem";
     }
 
     @PostMapping("/save")
     public String save(Miniatura a){
-        service.save(a);
+        miniaturaService.save(a);
         return "redirect:/garagem";
     }
 
     @GetMapping("/delete")
     public String delete(Integer id){
-        service.delete(id);
+        miniaturaService.delete(id);
         return "redirect:/garagem";
     }
 
     @GetMapping("/findOne")
     @ResponseBody
     public Optional<Miniatura> findOne(Integer id){
-        return service.findById(id);
+        return miniaturaService.findById(id);
     }
+
 }

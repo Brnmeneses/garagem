@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <link rel="icon" href="images/tesla.png">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="bootstrap/css/starter-template.css"/>
+    <title>Miniaturas</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="miniatura">Coleção <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item dropdown active">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true"
+                   aria-expanded="false">Cadastros</a>
+                <div class="dropdown-menu" aria-labelledby="dropdown01">
+                    <a class="dropdown-item" href="miniatura">Miniatura</a>
+                    <a class="dropdown-item" href="marca">Marca</a>
+                    <a class="dropdown-item" href="modelo">Modelo</a>
+                    <a class="dropdown-item" href="fabricante">Fabricante</a>
+                    <a class="dropdown-item" href="pais">País</a>
+                </div>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="text" placeholder="Pesquisar" aria-label="Pesquisar"/>
+            <button class="btn btn-secondary my-2 my-sm-0" type="submit">Pesquisar</button>
+        </form>
+    </div>
+</nav>
+
+<main role="main" class="inner cover">
+    <div class="col-md-6" id="div1">
+        <form th:action="@{/miniatura/salvar}" method="post" id="bForm">
+            <div class="form-row">
+                <div class="col-md-6 mb-3">
+                    <label for="id">Id</label>
+                    <input type="text" class="form-control" id="id" name="id" readonly>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="colecao">Coleção</label>
+                    <input type="text" class="form-control" id="colecao" name="colecao" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md mb-3">
+                    <label for="fabricante_id">Fabricante</label>
+                    <select class="form-control" id="fabricante_id" name="fabricante_id">
+                        <option value=""></option>
+                        <option th:each="fabricante : ${fabricante_id}"
+                                th:value="${fabricante.id}"
+                                th:utext="${fabricante.nome}"/>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6 mb-3">
+                    <label for="ano">Ano</label>
+                    <input type="date" class="form-control" id="ano" name="ano" >
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="cor">Cor</label>
+                    <input type="text" class="form-control" id="cor" name="cor" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md mb-3">
+                    <label for="modelo_id">Modelo</label>
+                    <select class="form-control" id="modelo_id" name="modelo_id">
+                        <option value=""></option>
+                        <option th:each="modelo : ${modelo_id}"
+                                th:value="${modelo.id}"
+                                th:utext="${modelo.marca_id.nome}+' '+${modelo.nome}"/>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" type="submit">Salvar</button>
+        </form>
+        </br>
+    </div>
+
+
+    <div class="card" id="div2">
+        <div class="card-box">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Coleção</th>
+                    <th>Fabricante</th>
+                    <th>Ano</th>
+                    <th>Cor</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th></th>
+                    <th><button class="btn btn-success nBtn btn-block">Novo</button></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="miniaturas : ${miniatura}">
+                    <td><span th:text="${miniaturas.id}"></span></td>
+                    <td><span th:text="${miniaturas.colecao}"></span></td>
+                    <td><span th:text="${miniaturas.fabricante_id.nome}"></span></td>
+                    <td th:text="${#temporals.format(miniaturas.ano,'dd/MM/yyyy')}"></td>
+                    <td><span th:text="${miniaturas.cor}"></span></td>
+                    <td><span th:text="${miniaturas.modelo_id.marca_id.nome}"></span></td>
+                    <td><span th:text="${miniaturas.modelo_id.nome}"></span></td>
+                    <td class="gg"><a th:href="@{miniatura/findOne/(id=${miniaturas.id})}" class="btn btn-primary btn-block eBtn">Edit</a>
+                    </td>
+                    <td class="gg"><a th:href="@{miniatura/delete/(id=${miniaturas.id})}" class="btn btn-danger btn-block delBtn">Delete</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <hr/>
+            <ul class="nav nav-pills">
+                <li class="nav-item" th:each="i : ${#numbers.sequence(0,miniatura.totalPages-1)}">
+                    <a th:href="@{miniatura(page=${i})}" th:text="${i}" class="nav-link"
+                       th:classappend="${currentPage}==${i}?'active':''"> </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="modal fade" id="divM" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmação</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="alert alert-danger">
+                        Deseja realmente deletar o registro?
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Não</button>
+                    <a href="" class="btn btn-danger" id="delRef">Sim</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!--jQuery first, then Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" th:src="@{js/miniatura.js}" src="../static/js/miniatura.js"></script>
+</body>
+</html>

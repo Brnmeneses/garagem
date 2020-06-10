@@ -1,52 +1,27 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <!-- Required meta tags always come first -->
     <meta charset="utf-8"/>
-
+    <link rel="icon" href="images/tesla.png">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
-
     <!-- Custom CSS -->
     <link rel="stylesheet" href="bootstrap/css/starter-template.css"/>
-
-    <meta name="theme-color" content="#563d7c"/>
-
-    <title>Coleção</title>
-
-    <style>
-        .bd-placeholder-img {
-            font-size: 1.125rem;
-            text-anchor: middle;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-
-        @media (min-width: 768px) {
-            .bd-placeholder-img-lg {
-                font-size: 3.5rem;
-            }
-        }
-    </style>
-
+    <title>Fabricantes</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
                 <a class="nav-link" href="/">Home </a>
             </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="garagem">Coleção <span class="sr-only">(current)</span></a>
+            <li class="nav-item">
+                <a class="nav-link" href="miniatura">Coleção</a>
             </li>
-
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown active">
                 <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true"
-                   aria-expanded="false">Cadastros</a>
+                   aria-expanded="false">Cadastros<span class="sr-only">(current)</span></a>
                 <div class="dropdown-menu" aria-labelledby="dropdown01">
                     <a class="dropdown-item" href="miniatura">Miniatura</a>
                     <a class="dropdown-item" href="marca">Marca</a>
@@ -55,7 +30,6 @@
                     <a class="dropdown-item" href="pais">País</a>
                 </div>
             </li>
-
         </ul>
         <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="text" placeholder="Pesquisar" aria-label="Pesquisar"/>
@@ -66,26 +40,55 @@
 
 <main role="main" class="inner cover">
 
-    <div class="card" id="div1">
+    <div class="col-md-6" id="div1">
+        <form th:action="@{/fabricante/salvar}" method="post" id="bForm">
+
+            <div class="form-row">
+                <div class="col-md-6 mb-3">
+                    <label for="id">Id</label>
+                    <input type="text" class="form-control" id="id" name="id" readonly>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6 mb-3">
+                    <label for="nome">Fabricante</label>
+                    <input type="text" class="form-control" id="nome" name="nome" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6 mb-3">
+                    <label for="descricao">Descrição</label>
+                    <textarea class="form-control" id="descricao" name="descricao" cols='10' rows='5' maxlength="999"></textarea>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" type="submit">Salvar</button>
+        </form>
+        </br>
+    </div>
+
+    <div class="card" id="div2">
         <div class="card-box">
             <table class="table table-hover">
                 <thead>
                 <tr>
                     <th>Id</th>
-                    <th>Marca</th>
-                    <th>Modelo</th>
+                    <th>Fabricante</th>
+                    <th>Descrição</th>
                     <th></th>
-                    <th></th>
+                    <th><button class="btn btn-success nBtn btn-block">Novo</button></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="miniatura : ${data}">
-                    <td><span th:text="${miniatura.id}"></span></td>
-                    <td><span th:text="${miniatura.marca}"></span></td>
-                    <td><span th:text="${miniatura.modelo}"></span></td>
-                    <td class="gg"><a th:href="@{findOne/(id=${miniatura.id})}" class="btn btn-primary btn-block eBtn">Edit</a>
+                <tr th:each="fabricantes : ${fabricante}">
+                    <td><span th:text="${fabricantes.id}"></span></td>
+                    <td><span th:text="${fabricantes.nome}"></span></td>
+                    <td><span th:text="${fabricantes.descricao}"></span></td>
+                    <td class="gg"><a th:href="@{fabricante/findOne/(id=${fabricantes.id})}" class="btn btn-primary btn-block eBtn">Edit</a>
                     </td>
-                    <td class="gg"><a th:href="@{delete/(id=${miniatura.id})}" class="btn btn-danger btn-block delBtn">Delete</a>
+                    <td class="gg"><a th:href="@{fabricante/delete/(id=${fabricantes.id})}" class="btn btn-danger btn-block delBtn">Delete</a>
                     </td>
                 </tr>
                 </tbody>
@@ -93,21 +96,15 @@
 
             <hr/>
             <ul class="nav nav-pills">
-                <li class="nav-item" th:each="i : ${#numbers.sequence(0,data.totalPages-1)}">
-                    <a th:href="@{garagem(page=${i})}" th:text="${i}" class="nav-link"
+                <li class="nav-item" th:each="i : ${#numbers.sequence(0,fabricante.totalPages-1)}">
+                    <a th:href="@{fabricante(page=${i})}" th:text="${i}" class="nav-link"
                        th:classappend="${currentPage}==${i}?'active':''"> </a>
                 </li>
             </ul>
         </div>
     </div>
 
-    <br/>
-    <br/>
-    <div align="center" id="div2">
-        <button class="btn btn-success nBtn">Novo Cadastro</button>
-    </div>
-
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal fade" id="divM" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -130,39 +127,11 @@
         </div>
     </div>
 
-    <div class="col-md-6 order-md-1" id="div3" style="display: none;">
-        <h4 class="mb-3">Cadastro</h4>
-        <form id="bForm" th:action="@{/save}" method="post">
-
-            <div class="form-group">
-                <label for="id" class="form-control-label">ID:</label>
-                <input type="text" class="form-control" id="id" name="id" value="" readonly/>
-            </div>
-            <div class="form-group">
-                <label for="marca" class="form-control-label">Marca:</label>
-                <input type="text" class="form-control" id="marca" name="marca" value=""/>
-            </div>
-            <div class="form-group">
-                <label for="modelo" class="form-control-label">Modelo:</label>
-                <input type="text" class="form-control" id="modelo" name="modelo" value=""/>
-            </div>
-
-            <br/>
-            <hr class="row">
-            <div class="btn-group mr-2">
-                <a class="btn btn-secondary btn-lg btn-block" href="/garagem" role="button">Close</a>
-            </div>
-            <div class="btn-group mr-2">
-                <input type="submit" class="btn btn-primary btn-lg btn-block" value="Save"/>
-            </div>
-        </form>
-    </div>
-
 </main>
 
 <!--jQuery first, then Bootstrap JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="bootstrap/js/bootstrap.min.js"></script>
-<script type="text/javascript" th:src="@{js/main.js}" src="../static/js/main.js"></script>
+<script type="text/javascript" th:src="@{js/fabricante.js}" src="../static/js/fabricante.js"></script>
 </body>
 </html>
